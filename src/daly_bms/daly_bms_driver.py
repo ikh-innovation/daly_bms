@@ -190,6 +190,7 @@ class DalyBMSDriver:
 
         parts = struct.unpack('>b ? ? B l', response_data)
 
+        # print(parts[0])
         if parts[0] == 0:
             mode = "stationary"
         elif parts[0] == 1:
