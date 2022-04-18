@@ -344,3 +344,17 @@ class DalyBMSDriver:
             "balancing_status": self.get_balancing_status(),
             "errors": self.get_errors()
         }
+    # def (self, on=True, response_data=None):
+    #     if on:
+    #         extra = "01"
+    #     else:
+    #         extra = "00"
+    #     if not response_data:
+    #         response_data = self._read_request("d9", extra=extra)
+    #     if not response_data:
+    #         return False
+    #     self.logger.info(response_data.hex())
+    #     # on response
+    #     # 0101000002006cbe
+    #     # off response
+    #     # 0001000002006c44

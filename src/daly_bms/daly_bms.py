@@ -61,10 +61,11 @@ class DalyBMS(RComponent):
     def read(self):
 
         # Get SOC
-        data = self._driver.get_soc()        
+        data = self._driver.get_soc()     
+        # print(data)   
         self._battery_status.voltage = data['total_voltage']
         self._battery_status.current = data['current']
-
+        
         # self._battery_status.level = int(round(((self._battery_status.voltage - self._min_total_voltage)*100)/(self._max_total_voltage-self._min_total_voltage)))
         # self._battery_status.level = data['soc_percent']
 
@@ -110,6 +111,7 @@ class DalyBMS(RComponent):
 
         # Get Cell Voltage Range
         data = self._driver.get_cell_voltage_range()
+        # print(data)
         self._battery_status.diff_volt = round(float(data['highest_voltage'] - data['lowest_voltage']),3)
 
         # print(data['lowest_voltage'],self._min_cell_voltage)
@@ -128,10 +130,10 @@ class DalyBMS(RComponent):
         
         self._battery_status.stop_charge = self._stop_charge
 
-        # if data['highest_voltage'] >= self._max_cell_voltage:
-        #     print("cut charging")
-        # elif data['highest_voltage'] >= self._max_cell_voltage:
-        #     print("cut charging")
+        if data['highest_voltage'] >= self._max_cell_voltage:
+            print("cut charging")
+        elif data['highest_voltage'] >= self._max_cell_voltage:
+            print("cut charging")
 
         data = None
         self._reading_timer = threading.Timer(self._publish_state_timer, self.read)
