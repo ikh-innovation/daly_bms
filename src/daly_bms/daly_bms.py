@@ -87,6 +87,9 @@ class DalyBMS(RComponent):
         self._battery_status.rated_capacity = data['capacity_ah']
 
         self._battery_status.level = int(round( (data['capacity_ah']*100) / self._battery_capacity ))
+        
+        # self._total_voltage_range =  self._max_total_voltage - self._min_total_voltage
+        # self._battery_status.level = self._total_voltage_range - (self._battery_status.voltage
 
         # if data['mode'] == 'discharging':
         #     self._battery_status.is_charging = False
