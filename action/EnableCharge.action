@@ -1,0 +1,11 @@
+#goal definition
+int16 action_id
+int16 ENABLE_CHARGE = 0
+---
+#result definition
+bool CHARGING_SUCCESS
+int16 BATTERY_LEVEL
+---
+#feedback
+string STATUS
+int16 BATTERY_LEVEL

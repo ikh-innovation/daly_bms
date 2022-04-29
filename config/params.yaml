@@ -1,8 +1,9 @@
-serial_port: "/dev/ttyUSB0"
+# add 99-usb-rules at /etc/udev/rules.d
+serial_port: "/dev/Daly_BMS"
 
 battery_capacity: 30.0
 
-max_total_voltage: 50
+max_total_voltage: 49
 min_total_voltage: 40
 
 max_cell_voltage: 2.55
