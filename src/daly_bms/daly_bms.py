@@ -65,32 +65,37 @@ class DalyBMS(RComponent):
 
         # Get SOC
         data = self._driver.get_soc()
+        if data:
 
-        # Get Volage and Current
-        self._battery_status.voltage = data['total_voltage']
-        self._battery_status.current = data['current']
+            # Get Volage and Current
+            self._battery_status.voltage = data['total_voltage']
+            self._battery_status.current = data['current']
 
         # Get Temperature
         data = self._driver.get_temperatures()
-        self._battery_status.temperature = data[1]
+        if data:
+            self._battery_status.temperature = data[1]
 
         # Get MOSFET Status
         data = self._driver.get_mosfet_status()
+        if data:
+            # Get BMS status
+            if data['mode'] == 'discharging':
+                self._battery_status.status = "Discharging"
+            elif data['mode'] == 'charging':
+                self._battery_status.status = "Charging"
+            else:
+                self._battery_status.status = "Stationary"
 
-        # Get BMS status
-        if data['mode'] == 'discharging':
-            self._battery_status.status = "Discharging"
-        elif data['mode'] == 'charging':
-            self._battery_status.status = "Charging"
-        else:
-            self._battery_status.status = "Stationary"
+            # Get Rated Capacity
+            self._battery_status.rated_capacity = data['capacity_ah']
 
-        # Get Rated Capacity
-        self._battery_status.rated_capacity = data['capacity_ah']
-
-        # map the percantage SOC
-        self._total_voltage_percentage = (self._battery_status.voltage - self._min_total_voltage)*(100/(self._max_total_voltage - self._min_total_voltage))
-        self._battery_status.level = int(min(max(0, self._total_voltage_percentage), 100))
+            # map the percantage SOC
+            self._total_voltage_percentage = (self._battery_status.voltage - self._min_total_voltage)*(
+                100/(self._max_total_voltage - self._min_total_voltage))
+            self._battery_status.level = int(
+                min(max(0, self._total_voltage_percentage), 100))
+        
 
         # if data['mode'] == 'discharging':
         #     self._battery_status.is_charging = False
@@ -111,31 +116,25 @@ class DalyBMS(RComponent):
 
         # Get Cell Voltage Range
         data = self._driver.get_cell_voltage_range()
-        # print(data)
-        self._battery_status.diff_volt = round(
-            float(data['highest_voltage'] - data['lowest_voltage']), 3)
+        if data:
+            self._battery_status.diff_volt = round(
+                float(data['highest_voltage'] - data['lowest_voltage']), 3)
 
-        # print(data['lowest_voltage'],self._min_cell_voltage)
+            self._battery_status.lowest_volt_cell = data['lowest_voltage']
 
-        if data['lowest_voltage'] <= self._min_cell_voltage:
-            self._go_to_charge = True
-        else:
-            self._go_to_charge = False
+            if data['lowest_voltage'] <= self._min_cell_voltage:
+                self._go_to_charge = True
+            else:
+                self._go_to_charge = False
 
-        self._battery_status.go_to_charge = self._go_to_charge
+            self._battery_status.go_to_charge = self._go_to_charge
 
-        if data['highest_voltage'] >= self._max_cell_voltage:
-            self._stop_charge = True
-        else:
-            self._stop_charge = False
+            if data['highest_voltage'] >= self._max_cell_voltage:
+                self._stop_charge = True
+            else:
+                self._stop_charge = False
 
-        self._battery_status.stop_charge = self._stop_charge
-
-        if data['highest_voltage'] >= self._max_cell_voltage:
-            # print("cut charging")
-            pass
-        elif data['highest_voltage'] >= self._max_cell_voltage:
-            print("cut charging")
+            self._battery_status.stop_charge = self._stop_charge
 
         data = None
         self._reading_timer = threading.Timer(

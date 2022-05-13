@@ -44,7 +44,7 @@ class EnableChargingServer(object):
 
     def sub_callback_limit_switch(self, data):
         self.limit_switch = data.state
-        
+
     def execute(self, goal):
         r = rospy.Rate(1)
         stop = False
@@ -91,19 +91,6 @@ class EnableChargingServer(object):
                 start_balancing = rospy.Time.now().to_sec()
                 
 
-            # check for ballancing cell status
-            if charged_flag:
-                self._feedback.STATUS = "Charged. Balancing cells remaining!"
-                # rospy.loginfo(self._feedback.STATUS)
-
-                # wait for ballancing cell
-                if self.bat_diff_volt < 0.080 and (rospy.Time.now().to_sec() - start_balancing) > balancing_delay:
-                    self._feedback.STATUS = "Robot is fully charged and ready to start"
-                    rospy.loginfo(self._feedback.STATUS)
-                    self._result.CHARGING_SUCCESS = True
-                    self._result.BATTERY_LEVEL = self.bat_level
-                    self.server.set_succeeded(self._result)
-                    stop = True
             
             # Condition to exit if the charging has never started
             if (rospy.Time.now().to_sec() - start) > (charging_delay-1) and not charging:
@@ -139,6 +126,31 @@ class EnableChargingServer(object):
                 self._pub_charging_relay.publish(False)
                 stop = True
 
+            # Condition to exit if the charging stop while charging
+            if charging and self.bat_status == "Stationary":
+                self._feedback.STATUS = "Charging stoped by charger."
+                rospy.logwarn(self._feedback.STATUS)
+                rospy.loginfo("Exiting")
+                self._result.CHARGING_SUCCESS = False
+                self._result.BATTERY_LEVEL = self.bat_level
+                self.server.set_aborted(result = self._result.CHARGING_SUCCESS, text = self._feedback.STATUS)
+                self._pub_charging_relay.publish(False)
+                stop = True
+
+            # check for ballancing cell status
+            if charged_flag:
+                self._feedback.STATUS = "Charged. Balancing cells remaining!"
+                # rospy.loginfo(self._feedback.STATUS)
+
+                # wait for ballancing cell
+                if self.bat_diff_volt < 0.080 and (rospy.Time.now().to_sec() - start_balancing) > balancing_delay:
+                    self._feedback.STATUS = "Robot is fully charged and ready to start"
+                    rospy.loginfo(self._feedback.STATUS)
+                    self._result.CHARGING_SUCCESS = True
+                    self._result.BATTERY_LEVEL = self.bat_level
+                    self.server.set_succeeded(self._result)
+                    stop = True
+            
             self.server.publish_feedback(self._feedback)
             r.sleep()  
 
