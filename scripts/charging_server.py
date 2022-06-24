@@ -18,7 +18,7 @@ class EnableChargingServer(object):
         self._sub = rospy.Subscriber("daly_bms/data", BatteryStatus, self.sub_callback)
 
         # Initialize Subscriber to Charging Limit Switch
-        self._sub_limit_switch = rospy.Subscriber("/aristos/charging_limit_switch", Labjack_dout, self.sub_callback_limit_switch)
+        self._sub_limit_switch = rospy.Subscriber("charging_limit_switch", Labjack_dout, self.sub_callback_limit_switch)
 
         # Initialize Publisher to Chargin relay
         self._pub_charging_relay = rospy.Publisher('charging_switch', Bool, queue_size=10)
@@ -50,7 +50,7 @@ class EnableChargingServer(object):
         stop = False
         charging = False
         charged_flag = False
-        balancing_delay = 300 #5 mins
+        balancing_delay = 120 #2 mins
         charging_delay = 20 #20 sec
         bat_high_voltage = 51.5 #Volt
 
@@ -127,7 +127,7 @@ class EnableChargingServer(object):
                 stop = True
 
             # Condition to exit if the charging stop while charging
-            if charging and self.bat_status == "Stationary":
+            if charging and self.bat_status == "Stationary" and not charged_flag:
                 self._feedback.STATUS = "Charging stoped by charger."
                 rospy.logwarn(self._feedback.STATUS)
                 rospy.loginfo("Exiting")
@@ -143,7 +143,7 @@ class EnableChargingServer(object):
                 # rospy.loginfo(self._feedback.STATUS)
 
                 # wait for ballancing cell
-                if self.bat_diff_volt < 0.080 and (rospy.Time.now().to_sec() - start_balancing) > balancing_delay:
+                if self.bat_diff_volt < 0.04 and (rospy.Time.now().to_sec() - start_balancing) > balancing_delay:
                     self._feedback.STATUS = "Robot is fully charged and ready to start"
                     rospy.loginfo(self._feedback.STATUS)
                     self._result.CHARGING_SUCCESS = True

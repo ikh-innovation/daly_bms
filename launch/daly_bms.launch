@@ -1,10 +1,10 @@
 <?xml version="1.0"?>
 <launch>
 
-  <node pkg="daly_bms" ns="aristos" name="daly_bms" type="daly_bms_node.py" output="screen" respawn="true" >
+  <node pkg="daly_bms" name="daly_bms" type="daly_bms_node.py" output="screen" respawn="true" >
     <rosparam command="load" file="$(find daly_bms)/config/params.yaml" />
   </node>
 
-  <node pkg="daly_bms" ns="aristos" name="enable_charging_server" type="charging_server.py" output="screen"/>
+  <node pkg="daly_bms" name="enable_charging_server" type="charging_server.py" output="screen"/>
 
 </launch>
