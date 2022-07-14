@@ -75,6 +75,14 @@ class EnableChargingServer(object):
         start = rospy.Time.now().to_sec()
 
         while not stop:
+            # check that preempt has not been requested by the client
+            if self.server.is_preempt_requested():
+                rospy.loginfo('Action Preempted')
+                self.server.set_preempted()
+                self._pub_charging_relay.publish(False)
+                stop = True
+                break
+
             self._feedback.BATTERY_LEVEL = self.bat_level
 
             # feedback: charging (if self.bat_status == "Charging")
