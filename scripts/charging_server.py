@@ -50,7 +50,7 @@ class EnableChargingServer(object):
         stop = False
         charging = False
         charged_flag = False
-        balancing_delay = 120 #2 mins
+        balancing_delay = 180 #3 mins
         charging_delay = 20 #20 sec
         bat_high_voltage = 51.5 #Volt
 
@@ -151,7 +151,7 @@ class EnableChargingServer(object):
                 # rospy.loginfo(self._feedback.STATUS)
 
                 # wait for ballancing cell
-                if self.bat_diff_volt < 0.04 and (rospy.Time.now().to_sec() - start_balancing) > balancing_delay:
+                if self.bat_diff_volt < 0.1 and (rospy.Time.now().to_sec() - start_balancing) > balancing_delay:
                     self._feedback.STATUS = "Robot is fully charged and ready to start"
                     rospy.loginfo(self._feedback.STATUS)
                     self._result.CHARGING_SUCCESS = True
