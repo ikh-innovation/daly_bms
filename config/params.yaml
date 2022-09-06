@@ -3,11 +3,11 @@ serial_port: "/dev/Daly_BMS"
 
 battery_capacity: 30.0
 
-max_total_voltage: 49
-min_total_voltage: 38
+max_total_voltage: 50
+min_total_voltage: 41
 
 max_cell_voltage: 2.6
-min_cell_voltage: 1.95
+min_cell_voltage: 2.05
 
 max_temperature: 40
 min_temperature: 5
