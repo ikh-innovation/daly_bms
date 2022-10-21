@@ -34,13 +34,13 @@ class EnableChargingServer(object):
         self.server.start()
 
     def sub_callback(self, data):
-        self.bat_total_voltage = data.voltage
-        self.bat_level = data.level
-        self.bat_capacity = data.rated_capacity
-        self.bat_status = data.status
-        self.bat_go_to_charge = data.go_to_charge
-        self.bat_stop_charge = data.stop_charge
-        self.bat_diff_volt = data.diff_volt
+        self.bat_total_voltage = data.battery.voltage
+        self.bat_level = data.battery.level
+        self.bat_capacity = data.battery.rated_capacity
+        self.bat_status = data.battery.status
+        self.bat_go_to_charge = data.battery.go_to_charge
+        self.bat_stop_charge = data.battery.stop_charge
+        self.bat_diff_volt = data.battery.diff_volt
 
     def sub_callback_limit_switch(self, data):
         self.limit_switch = data.state
