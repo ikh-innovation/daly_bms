@@ -1,5 +1,5 @@
 # add 99-usb-rules at /etc/udev/rules.d
-serial_port: "/dev/Daly_BMS"
+serial_port: $(arg driver_port)
 
 battery_capacity: 30.0
 
