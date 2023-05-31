@@ -7,6 +7,7 @@ project(daly_bms)
 ## Find catkin macros and libraries
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
 ## is used, also find other catkin packages
+
 find_package(catkin REQUIRED COMPONENTS
   rospy
   rcomponent
@@ -44,6 +45,10 @@ catkin_python_setup()
 ##     and list every .msg/.srv/.action file to be processed
 ##   * uncomment the generate_messages entry below
 ##   * add every package in MSG_DEP_SET to generate_messages(DEPENDENCIES ...)
+
+find_package(catkin REQUIRED genmsg actionlib_msgs geometry_msgs actionlib)
+add_action_files(DIRECTORY action FILES EnableCharge.action)
+generate_messages(DEPENDENCIES actionlib_msgs geometry_msgs std_msgs)
 
 ## Generate messages in the 'msg' folder
 # add_message_files(

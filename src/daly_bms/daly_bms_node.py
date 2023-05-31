@@ -6,7 +6,7 @@ from daly_bms import DalyBMS
 
 def main():
 
-    rospy.init_node("daly_bms_node")
+    rospy.init_node("bms")
 
     rc_node = DalyBMS()
 

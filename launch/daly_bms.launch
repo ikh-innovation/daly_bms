@@ -1,8 +1,16 @@
 <?xml version="1.0"?>
 <launch>
+  <arg name="config_dir" default="$(find daly_bms)/config/params.yaml"/>
+  <arg name="driver_port" default="/dev/Daly_BMS"/>
+  <arg name="bms_data_topic" default="bms/data"/>
 
-  <node pkg="daly_bms" type="daly_bms_node.py" name="daly_bms" output="screen">
-    <rosparam command="load" file="$(find daly_bms)/config/params.yaml" />
+  <node pkg="daly_bms" name="bms" type="daly_bms_node.py" output="screen" respawn="true" >
+    <rosparam command="load" file="$(arg config_dir)" subst_value="true"/>
+    <remap from="bms/data" to="$(arg bms_data_topic)"/>
+  </node>
+
+  <node pkg="daly_bms" name="enable_charging_server" type="charging_server.py" output="screen">
+    <remap from="bms/data" to="$(arg bms_data_topic)"/>
   </node>
 
 </launch>

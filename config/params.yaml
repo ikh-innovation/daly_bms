@@ -1,12 +1,13 @@
-serial_port: "/dev/ttyUSB0"
+# add 99-usb-rules at /etc/udev/rules.d
+serial_port: $(arg driver_port)
 
 battery_capacity: 30.0
 
 max_total_voltage: 50
-min_total_voltage: 40
+min_total_voltage: 41
 
-max_cell_voltage: 2.55
-min_cell_voltage: 1.9
+max_cell_voltage: 2.6
+min_cell_voltage: 2.05
 
 max_temperature: 40
 min_temperature: 5
